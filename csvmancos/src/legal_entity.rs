@@ -199,6 +199,7 @@ pub fn entity_type_of_str(s: &str) -> Option<EntityType> {
         "PRIV LTD SECT. 30 (Private limited company, section 30 of the Companies Act)" => Some(EntityType::Recognised),
         "Protected Cell Company" => Some(EntityType::Recognised),
         "Converted/Closed" => Some(EntityType::Recognised),
+        "Further Education and Sixth Form College Corps" => Some(EntityType::Recognised),
         "Overseas Entity" => Some(EntityType::Recognised),
         "Public Limited Company" => Some(EntityType::Plc),
         _ => None
