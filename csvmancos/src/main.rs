@@ -67,10 +67,6 @@ fn find_rmcs() -> Result<(), Box<dyn Error>> {
     let included_text = include_str!("include_names.txt");
     let included_names = string_column_to_vec(included_text);
 
-    let mut counter = 0;
-    // this knob controls how often we flush/report
-    const INTERVAL : usize = 100000;
-
     let mut reader = csv::Reader::from_reader(io::stdin());
     let mut writer = csv::Writer::from_writer(io::stdout());
 
@@ -78,12 +74,6 @@ fn find_rmcs() -> Result<(), Box<dyn Error>> {
         .map(Result::unwrap)
         .map(|ler| LegalEntity::new(ler))
         .filter_map(|le| le)
-        .inspect(|_| {
-            counter += 1;
-            if 0 == counter % INTERVAL {
-                eprintln!("{}", counter);
-            }
-        })
         .filter(|le| examine_entity_type(le.category))
         .filter(|le| exclude_by_name(le, &excluded_names))
         .filter(|le| relevant_sic_codes(le))
