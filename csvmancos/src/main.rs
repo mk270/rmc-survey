@@ -70,7 +70,7 @@ fn find_rmcs() -> Result<(), Box<dyn Error>> {
     let included_text = include_str!("include_names.txt");
     let included_names = string_column_to_vec(included_text);
 
-    let interval = 100000;
+    let interval = 100000; // this knob controls how often we flush/report
     let mut counter = 0;
     let mut rmcs = 0;
 
@@ -105,6 +105,7 @@ fn find_rmcs() -> Result<(), Box<dyn Error>> {
         rmcs += 1;
     }
     eprintln!("#RMCs: {}", rmcs);
+    writer.flush()?; // otiose?
     Ok(())
 }
 
