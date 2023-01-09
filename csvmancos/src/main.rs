@@ -56,7 +56,7 @@ impl RMC {
     }
 }
 
-fn get_rmc(c: &legal_entity::LegalEntity,
+fn get_rmc(c: legal_entity::LegalEntity,
           excluded_names: &Vec<String>,
           included_names: &Vec<String>)
           -> Option<RMC> {
@@ -72,10 +72,7 @@ fn get_rmc(c: &legal_entity::LegalEntity,
             }
         }
     }
-
-    let name = &c.name;
-
-    if matches_any_substring(name, excluded_names) {
+    if matches_any_substring(&c.name, excluded_names) {
         return None;
     }
 
@@ -85,13 +82,13 @@ fn get_rmc(c: &legal_entity::LegalEntity,
         return None;
     }
 
-    let rmc = RMC::new(c.name.clone(),
-                       c.number.clone(),
+    let rmc = RMC::new(c.name,
+                       c.number,
                        t.unwrap().to_string());
 
-    if matches_any_substring(name, included_names) {
+    if matches_any_substring(&rmc.name, included_names) {
         Some(rmc)
-    } else if name.contains(" HOUSE ") && name.contains("MANAGEMENT") {
+    } else if rmc.name.contains(" HOUSE ") && rmc.name.contains("MANAGEMENT") {
         Some(rmc)
     } else {
         None
@@ -120,7 +117,7 @@ fn find_rmcs() -> Result<(), Box<dyn Error>> {
             writer.flush()?
         }
 
-        match get_rmc(&record, &excluded_names, &included_names) {
+        match get_rmc(record, &excluded_names, &included_names) {
             None => continue,
             Some(rmc) => writer.write_record(rmc.to_vec())?
         }
