@@ -117,7 +117,7 @@ fn find_rmcs() -> Result<(), Box<dyn Error>> {
         })
         .filter_map(|le| get_rmc(le, &excluded_names, &included_names))
     {
-        writer.write_record(rmc.to_vec());
+        writer.write_record(rmc.to_vec())?;
         writer.flush()?
     }
 
