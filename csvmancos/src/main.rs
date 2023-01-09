@@ -34,63 +34,30 @@ fn examine_entity_type(entity_type: EntityType) -> bool {
     }
 }
 
-struct RMC {
-    name: String,
-    number: String,
-    description: String
+fn exclude_by_name(c: &LegalEntity,
+                   excluded_names: &Vec<String>) -> bool
+{
+    !matches_any_substring(&c.name, excluded_names)
 }
 
-impl RMC {
-    fn new(name: String, number: String, description: String) -> RMC {
-        RMC {
-            name, number, description
-        }
+// TODO: check we've got the test in the right sense
+fn relevant_sic_codes(c: &LegalEntity) -> bool
+{
+    if c.sic_codes.iter().all(|i| i != &"68320" && i != &"98000") {
+        return false;
     }
-
-    fn to_vec(self) -> Vec<String> {
-        vec![
-            self.number,
-            self.description,
-            self.name
-        ]
-    }
+    true
 }
 
-fn get_rmc(c: legal_entity::LegalEntityRecord,
-          excluded_names: &Vec<String>,
+fn include_by_name(c: &LegalEntity,
           included_names: &Vec<String>)
-          -> Option<RMC> {
-    let t = entity_type_of_str(&c.company_type);
-    match t {
-        None => {
-            eprintln!("Unrecognised entity type: {}", &c.company_type);
-            return None;
-        },
-        Some(et) => {
-            if !examine_entity_type(et) {
-                return None;
-            }
-        }
-    }
-    if matches_any_substring(&c.name, excluded_names) {
-        return None;
-    }
-
-    let sics : Vec<String> = sics_of_one_record(&c);
-    if sics.iter().all(|i| i != &"68320" && i != &"98000") {
-        return None;
-    }
-
-    let rmc = RMC::new(c.name,
-                       c.number,
-                       t.unwrap().to_string());
-
-    if matches_any_substring(&rmc.name, included_names) {
-        Some(rmc)
-    } else if rmc.name.contains(" HOUSE ") && rmc.name.contains("MANAGEMENT") {
-        Some(rmc)
+          -> bool {
+    if matches_any_substring(&c.name, included_names) {
+        true
+    } else if c.name.contains(" HOUSE ") && c.name.contains("MANAGEMENT") {
+        true
     } else {
-        None
+        false
     }
 }
 
@@ -109,13 +76,18 @@ fn find_rmcs() -> Result<(), Box<dyn Error>> {
 
     for rmc in reader.deserialize::<LegalEntityRecord>()
         .map(Result::unwrap)
+        .map(|ler| LegalEntity::new(ler))
+        .filter_map(|le| le)
         .inspect(|_| {
             counter += 1;
             if 0 == counter % INTERVAL {
                 eprintln!("{}", counter);
             }
         })
-        .filter_map(|le| get_rmc(le, &excluded_names, &included_names))
+        .filter(|le| examine_entity_type(le.category))
+        .filter(|le| exclude_by_name(le, &excluded_names))
+        .filter(|le| relevant_sic_codes(le))
+        .filter(|le| include_by_name(le, &included_names))
     {
         writer.write_record(rmc.to_vec())?;
         writer.flush()?

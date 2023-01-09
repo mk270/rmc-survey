@@ -282,3 +282,46 @@ pub fn sics_of_one_record(record: &LegalEntityRecord) -> Vec<String> {
     }
     sics
 }
+
+pub struct LegalEntity {
+    pub name: String,
+    pub number: String,
+    pub category: EntityType,
+    pub sic_codes: Vec<String>
+}
+
+impl LegalEntity {
+    pub fn new(ler: LegalEntityRecord) -> Option<LegalEntity> {
+        let sic_codes = sics_of_one_record(&ler);
+        let category = entity_type_of_str(&ler.company_type);
+        match category {
+            None => {
+                eprintln!("Unrecognised entity type");
+                None
+            },
+            Some(cat) =>
+                Some(LegalEntity {
+                    name: ler.name,
+                    number: ler.number,
+                    category: cat,
+                    sic_codes: sic_codes
+                })
+        }
+    }
+
+    pub fn to_vec(self) -> Vec<String> {
+        let category = self.category;
+        let description = format!("{category}");
+        vec![
+            self.number,
+            description,
+            self.name
+        ]
+    }
+}
+
+impl fmt::Display for LegalEntity {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "LegalEntity: {}", self.number)
+    }
+}
