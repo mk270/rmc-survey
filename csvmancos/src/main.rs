@@ -34,19 +34,25 @@ fn examine_entity_type(entity_type: EntityType) -> bool {
     }
 }
 
-fn is_rmc(c: &legal_entity::LegalEntity,
+struct RMC {
+    name: String,
+    number: String,
+    description: String
+}
+
+fn get_rmc(c: &legal_entity::LegalEntity,
           excluded_names: &Vec<String>,
           included_names: &Vec<String>)
-          -> bool {
+          -> Option<RMC> {
     let t = entity_type_of_str(&c.company_type);
     match t {
         None => {
             eprintln!("Unrecognised entity type: {}", &c.company_type);
-            return false;
+            return None;
         },
         Some(et) => {
             if !examine_entity_type(et) {
-                return false;
+                return None;
             }
         }
     }
@@ -54,22 +60,27 @@ fn is_rmc(c: &legal_entity::LegalEntity,
     let name = &c.name;
 
     if matches_any_substring(name, excluded_names) {
-        return false
+        return None;
     }
 
     let sics = sics_of_one_record(&c);
     if !(sics.contains(&"68320".to_string()) ||
          sics.contains(&"98000".to_string())) {
-        return false
+        return None;
     }
 
+    let rmc = RMC {
+            name: c.name.clone(),
+            number: c.number.clone(),
+            description: t.unwrap().to_string()
+    };
     if matches_any_substring(name, included_names) {
-        return true
+        Some(rmc)
+    } else if name.contains(" HOUSE ") && name.contains("MANAGEMENT") {
+        Some(rmc)
+    } else {
+        None
     }
-    if name.contains(" HOUSE ") && name.contains("MANAGEMENT") {
-        return true
-    }
-    false
 }
 
 fn find_rmcs() -> Result<(), Box<dyn Error>> {
@@ -93,14 +104,13 @@ fn find_rmcs() -> Result<(), Box<dyn Error>> {
             writer.flush()?
         }
 
-        if !is_rmc(&record, &excluded_names, &included_names) {
-            continue;
+        match get_rmc(&record, &excluded_names, &included_names) {
+            None => continue,
+            Some(rmc) =>
+                writer.write_record(&[rmc.number,
+                                      rmc.description,
+                                      rmc.name])?
         }
-
-        let entity_type = entity_type_of_str(&record.company_type);
-        writer.write_record(&[record.number,
-                              entity_type.unwrap().to_string(),
-                              record.name])?;
     }
     writer.flush()?; // otiose?
     Ok(())
