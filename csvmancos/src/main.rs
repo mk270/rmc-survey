@@ -72,7 +72,6 @@ fn find_rmcs() -> Result<(), Box<dyn Error>> {
 
     let interval = 100000; // this knob controls how often we flush/report
     let mut counter = 0;
-    let mut rmcs = 0;
 
     let mut reader = csv::Reader::from_reader(io::stdin());
     let mut writer = csv::Writer::from_writer(io::stdout());
@@ -91,20 +90,10 @@ fn find_rmcs() -> Result<(), Box<dyn Error>> {
         }
 
         let entity_type = entity_type_of_str(&record.company_type);
-        match entity_type {
-            Some(_) => {},
-            None => {
-                eprintln!("Unrecognised entity type: {} @ {:?}",
-                          record.company_type, record);
-                continue;
-            }
-        }
         writer.write_record(&[record.number,
                               entity_type.unwrap().to_string(),
                               record.name])?;
-        rmcs += 1;
     }
-    eprintln!("#RMCs: {}", rmcs);
     writer.flush()?; // otiose?
     Ok(())
 }
