@@ -47,11 +47,11 @@ impl RMC {
         }
     }
 
-    fn to_vec(&self) -> Vec<String> {
+    fn to_vec(self) -> Vec<String> {
         vec![
-            self.number.clone(),
-            self.description.clone(),
-            self.name.clone()
+            self.number,
+            self.description,
+            self.name
         ]
     }
 }
