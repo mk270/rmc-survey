@@ -21,14 +21,14 @@ mod util;
    i.e., if the entity is, say, a CIO, should we bother investigating
    further?
 */
-fn examine_entity_type(entity_type: Option<EntityType>) -> bool {
+fn examine_entity_type(entity_type: EntityType) -> bool {
     match entity_type {
         /* short circuit some entity types that are definitely irrelevant */
-        Some(EntityType::Plc) => false,
-        Some(EntityType::CIC) => false,
-        Some(EntityType::CIO) => false,
-        Some(EntityType::RegSoc) => false,
-        Some(EntityType::Recognised) => false,
+        EntityType::Plc => false,
+        EntityType::CIC => false,
+        EntityType::CIO => false,
+        EntityType::RegSoc => false,
+        EntityType::Recognised => false,
         /* otherwise, it's worth investigating further */
         _ => true
     }
@@ -39,8 +39,16 @@ fn is_rmc(c: &legal_entity::LegalEntity,
           included_names: &Vec<String>)
           -> bool {
     let t = entity_type_of_str(&c.company_type);
-    if !examine_entity_type(t) {
-        return false
+    match t {
+        None => {
+            eprintln!("Unrecognised entity type: {}", &c.company_type);
+            return false;
+        },
+        Some(et) => {
+            if !examine_entity_type(et) {
+                return false;
+            }
+        }
     }
 
     let name = &c.name;
