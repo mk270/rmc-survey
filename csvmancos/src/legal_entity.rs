@@ -174,34 +174,90 @@ impl fmt::Display for EntityType {
 
 pub fn entity_type_of_str(s: &str) -> Option<EntityType> {
     match s {
-        "Private Limited Company" => Some(EntityType::Ltd),
-        "PRI/LTD BY GUAR/NSC (Private, limited by guarantee, no share capital)" => Some(EntityType::CLG),
-        "PRI/LBG/NSC (Private, Limited by guarantee, no share capital, use of 'Limited' exemption)" => Some(EntityType::CLG),
-        "Private Unlimited" => Some(EntityType::Unltd),
-        "Private Unlimited Company" => Some(EntityType::Unltd),
-        "Community Interest Company" => Some(EntityType::CIC),
-        "Charitable Incorporated Organisation" => Some(EntityType::CIO),
-        "Scottish Charitable Incorporated Organisation" => Some(EntityType::CIO),
-        "Registered Society" => Some(EntityType::RegSoc),
-        "Limited Partnership" => Some(EntityType::Recognised),
-        "Limited Liability Partnership" => Some(EntityType::Recognised),
-        "Other company type" => Some(EntityType::Recognised),
-        "Industrial and Provident Society" => Some(EntityType::Recognised),
-        "Investment Company with Variable Capital" => Some(EntityType::Recognised),
-        "Investment Company with Variable Capital(Umbrella)" => Some(EntityType::Recognised),
-        "Royal Charter Company" => Some(EntityType::Recognised),
-        "Scottish Partnership" => Some(EntityType::Recognised),
-        "United Kingdom Economic Interest Grouping" => Some(EntityType::Recognised),
-        "United Kingdom Societas" => Some(EntityType::Recognised),
-        "Investment Company with Variable Capital (Securities)" => Some(EntityType::Recognised),
-        "Old Public Company" => Some(EntityType::Recognised),
-        "Other Company Type" => Some(EntityType::Recognised),
-        "PRIV LTD SECT. 30 (Private limited company, section 30 of the Companies Act)" => Some(EntityType::Recognised),
-        "Protected Cell Company" => Some(EntityType::Recognised),
-        "Converted/Closed" => Some(EntityType::Recognised),
-        "Further Education and Sixth Form College Corps" => Some(EntityType::Recognised),
-        "Overseas Entity" => Some(EntityType::Recognised),
-        "Public Limited Company" => Some(EntityType::Plc),
+        "Private Limited Company"
+            => Some(EntityType::Ltd),
+
+        "PRI/LTD BY GUAR/NSC (Private, limited by guarantee, no share capital)"
+            => Some(EntityType::CLG),
+
+        "PRI/LBG/NSC (Private, Limited by guarantee, no share capital, use of 'Limited' exemption)"
+            => Some(EntityType::CLG),
+
+        "Private Unlimited"
+            => Some(EntityType::Unltd),
+
+        "Private Unlimited Company"
+            => Some(EntityType::Unltd),
+
+        "Community Interest Company"
+            => Some(EntityType::CIC),
+
+        "Charitable Incorporated Organisation"
+            => Some(EntityType::CIO),
+
+        "Scottish Charitable Incorporated Organisation"
+            => Some(EntityType::CIO),
+
+        "Registered Society"
+            => Some(EntityType::RegSoc),
+
+        "Limited Partnership"
+            => Some(EntityType::Recognised),
+
+        "Limited Liability Partnership"
+            => Some(EntityType::Recognised),
+
+        "Other company type"
+            => Some(EntityType::Recognised),
+
+        "Industrial and Provident Society"
+            => Some(EntityType::Recognised),
+
+        "Investment Company with Variable Capital"
+            => Some(EntityType::Recognised),
+
+        "Investment Company with Variable Capital(Umbrella)"
+            => Some(EntityType::Recognised),
+
+        "Royal Charter Company"
+            => Some(EntityType::Recognised),
+
+        "Scottish Partnership"
+            => Some(EntityType::Recognised),
+
+        "United Kingdom Economic Interest Grouping"
+            => Some(EntityType::Recognised),
+
+        "United Kingdom Societas"
+            => Some(EntityType::Recognised),
+
+        "Investment Company with Variable Capital (Securities)"
+            => Some(EntityType::Recognised),
+
+        "Old Public Company"
+            => Some(EntityType::Recognised),
+
+        "Other Company Type"
+            => Some(EntityType::Recognised),
+
+        "PRIV LTD SECT. 30 (Private limited company, section 30 of the Companies Act)"
+            => Some(EntityType::Recognised),
+
+        "Protected Cell Company"
+            => Some(EntityType::Recognised),
+
+        "Converted/Closed"
+            => Some(EntityType::Recognised),
+
+        "Further Education and Sixth Form College Corps"
+            => Some(EntityType::Recognised),
+
+        "Overseas Entity"
+            => Some(EntityType::Recognised),
+
+        "Public Limited Company"
+            => Some(EntityType::Plc),
+
         _ => None
     }
 }
