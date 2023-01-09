@@ -40,6 +40,22 @@ struct RMC {
     description: String
 }
 
+impl RMC {
+    fn new(name: String, number: String, description: String) -> RMC {
+        RMC {
+            name, number, description
+        }
+    }
+
+    fn to_vec(&self) -> Vec<String> {
+        vec![
+            self.number.clone(),
+            self.description.clone(),
+            self.name.clone()
+        ]
+    }
+}
+
 fn get_rmc(c: &legal_entity::LegalEntity,
           excluded_names: &Vec<String>,
           included_names: &Vec<String>)
@@ -69,11 +85,10 @@ fn get_rmc(c: &legal_entity::LegalEntity,
         return None;
     }
 
-    let rmc = RMC {
-            name: c.name.clone(),
-            number: c.number.clone(),
-            description: t.unwrap().to_string()
-    };
+    let rmc = RMC::new(c.name.clone(),
+                       c.number.clone(),
+                       t.unwrap().to_string());
+
     if matches_any_substring(name, included_names) {
         Some(rmc)
     } else if name.contains(" HOUSE ") && name.contains("MANAGEMENT") {
@@ -106,10 +121,7 @@ fn find_rmcs() -> Result<(), Box<dyn Error>> {
 
         match get_rmc(&record, &excluded_names, &included_names) {
             None => continue,
-            Some(rmc) =>
-                writer.write_record(&[rmc.number,
-                                      rmc.description,
-                                      rmc.name])?
+            Some(rmc) => writer.write_record(rmc.to_vec())?
         }
     }
     writer.flush()?; // otiose?
