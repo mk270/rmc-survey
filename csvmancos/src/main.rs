@@ -77,8 +77,7 @@ fn get_rmc(c: legal_entity::LegalEntity,
     }
 
     let sics : Vec<String> = sics_of_one_record(&c);
-    if !sics.contains(&"68320".to_string()) &&
-        !sics.contains(&"98000".to_string()) {
+    if sics.iter().all(|i| i != &"68320" && i != &"98000") {
         return None;
     }
 
