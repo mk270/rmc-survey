@@ -144,7 +144,7 @@ pub struct LegalEntity {
 
   In any case, CICs are unlikely to be bona fide RMCs.
 */
-#[derive(Debug)] 
+#[derive(Copy, Clone, Debug)]
 pub enum EntityType {
     Ltd,
     CLG,
