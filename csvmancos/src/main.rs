@@ -107,21 +107,20 @@ fn find_rmcs() -> Result<(), Box<dyn Error>> {
     let mut reader = csv::Reader::from_reader(io::stdin());
     let mut writer = csv::Writer::from_writer(io::stdout());
 
-    for result in reader.deserialize::<LegalEntity>() {
-        let record: LegalEntity = result?;
-        counter += 1;
-
-        if 0 == counter % INTERVAL {
-            eprintln!("{}", counter);
-            writer.flush()?
-        }
-
-        match get_rmc(record, &excluded_names, &included_names) {
-            None => continue,
-            Some(rmc) => writer.write_record(rmc.to_vec())?
-        }
+    for rmc in reader.deserialize::<LegalEntity>()
+        .map(Result::unwrap)
+        .inspect(|_| {
+            counter += 1;
+            if 0 == counter % INTERVAL {
+                eprintln!("{}", counter);
+            }
+        })
+        .filter_map(|le| get_rmc(le, &excluded_names, &included_names))
+    {
+        writer.write_record(rmc.to_vec());
+        writer.flush()?
     }
-    writer.flush()?; // otiose?
+
     Ok(())
 }
 
