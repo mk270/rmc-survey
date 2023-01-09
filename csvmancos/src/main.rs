@@ -56,7 +56,7 @@ impl RMC {
     }
 }
 
-fn get_rmc(c: legal_entity::LegalEntity,
+fn get_rmc(c: legal_entity::LegalEntityRecord,
           excluded_names: &Vec<String>,
           included_names: &Vec<String>)
           -> Option<RMC> {
@@ -107,7 +107,7 @@ fn find_rmcs() -> Result<(), Box<dyn Error>> {
     let mut reader = csv::Reader::from_reader(io::stdin());
     let mut writer = csv::Writer::from_writer(io::stdout());
 
-    for rmc in reader.deserialize::<LegalEntity>()
+    for rmc in reader.deserialize::<LegalEntityRecord>()
         .map(Result::unwrap)
         .inspect(|_| {
             counter += 1;

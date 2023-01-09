@@ -20,7 +20,7 @@ use serde::Deserialize;
 
 #[allow(dead_code)]
 #[derive(Debug, Deserialize)]
-pub struct LegalEntity {
+pub struct LegalEntityRecord {
     #[serde(rename="CompanyName")]
     pub name: String,
     #[serde(rename=" CompanyNumber")]
@@ -267,7 +267,7 @@ pub fn entity_type_of_str(s: &str) -> Option<EntityType> {
   and, in the data, are presented with a textual annotation, which we remove. The separator
   for the text annotation is what we use to work out if the code is valid.
 */
-pub fn sics_of_one_record(record: &LegalEntity) -> Vec<String> {
+pub fn sics_of_one_record(record: &LegalEntityRecord) -> Vec<String> {
     let mut sics = vec![];
     for sic in vec![
         &record.sic_code1,
