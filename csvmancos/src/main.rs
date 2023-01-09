@@ -73,7 +73,7 @@ fn find_rmcs() -> Result<(), Box<dyn Error>> {
     for rmc in reader.deserialize::<LegalEntityRecord>()
         .map(Result::unwrap)
         .map(|ler| LegalEntity::new(ler))
-        .filter_map(|le| le)
+        .filter_map(|opt_le| opt_le)
         .filter(|le| examine_entity_type(le.category))
         .filter(|le| exclude_by_name(le, &excluded_names))
         .filter(|le| relevant_sic_codes(le))
