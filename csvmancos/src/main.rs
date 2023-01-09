@@ -40,13 +40,9 @@ fn exclude_by_name(c: &LegalEntity,
     !matches_any_substring(&c.name, excluded_names)
 }
 
-// TODO: check we've got the test in the right sense
 fn relevant_sic_codes(c: &LegalEntity) -> bool
 {
-    if c.sic_codes.iter().all(|i| i != &"68320" && i != &"98000") {
-        return false;
-    }
-    true
+    !c.sic_codes.iter().all(|i| i != &"68320" && i != &"98000")
 }
 
 fn include_by_name(c: &LegalEntity,
